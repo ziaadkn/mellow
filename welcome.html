@@ -16,7 +16,7 @@
 
 <body>
   <div class="main-content">
-    <img src="https://yourcdn.com/logo.png" alt="Mellow Logo" style="width: 120px; margin-bottom: 20px; border-radius: 12px;" />
+    <img src="MELLOW.png" alt="Mellow Logo" style="width: 120px; margin-bottom: 20px; border-radius: 12px;" />
 
     <h1>✨ You're all set!</h1>
 
@@ -24,12 +24,47 @@
       Your email has been confirmed successfully. Welcome to <strong>Mellow</strong> — your cozy space to connect with kind people.
     </p>
 
+    <div id="message" aria-live="polite" role="alert"></div>
+
     <a href="index.html" style="margin-top: 30px;">
       <button>Back to Sign In</button>
     </a>
   </div>
 
   <footer>Made with ❤️ by Ziad</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabase = Supabase.createClient('https://szolqkxphqzhxbzzxarn.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6b2xxa3hwaHF6aHhienp4YXJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNjA5MTUsImV4cCI6MjA2NTgzNjkxNX0.9d1kxdyXQRDeWddzTFFrdX064OngMnpmILHHrqMdksk');
+
+    window.addEventListener('load', async () => {
+      const { data, error } = await supabase.auth.getSession();
+      const messageDiv = document.getElementById('message');
+
+      if (error) {
+        messageDiv.textContent = 'Error logging in. Please try again.';
+        messageDiv.className = 'error';
+        return;
+      }
+
+      if (data.session) {
+        messageDiv.textContent = 'Login successful! Redirecting...';
+        messageDiv.className = 'success';
+        // Redirect to index.html after 2 seconds
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 2000);
+      } else {
+        messageDiv.textContent = 'No active session found. Please sign in.';
+        messageDiv.className = 'error';
+      }
+
+      // Clear URL fragment
+      if (window.location.hash) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    });
+  </script>
 </body>
 
 </html>
