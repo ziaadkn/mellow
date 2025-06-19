@@ -26,7 +26,9 @@ function validateEmail(email) {
 // Show message helper
 function showMessage(text, type) {
   messageDiv.textContent = text
-  messageDiv.className = type
+  messageDiv.className = ''  // Clear previous class
+  void messageDiv.offsetWidth // Force reflow for CSS transition (optional)
+  messageDiv.classList.add(type)
 }
 
 // Calculate age from birthdate (YYYY-MM-DD)
@@ -89,6 +91,7 @@ form.addEventListener('submit', async (event) => {
     passwordInput.focus()
     return
   }
+  console.log({ displayName, email, password, confirmPassword, birthdate, gender })
 
   // Supabase sign up
 const { data, error } = await supabase.auth.signUp({
