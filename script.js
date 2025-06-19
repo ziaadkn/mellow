@@ -91,13 +91,18 @@ form.addEventListener('submit', async (event) => {
   }
 
   // Supabase sign up
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: 'https://ziaadkn.github.io/mellow/welcome.html'
-    }
-  })
+const { data, error } = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    data: {
+      display_name: displayName,
+      birthdate,
+      gender,
+    },
+    emailRedirectTo: 'https://ziaadkn.github.io/mellow/welcome.html'
+  }
+});
 
   if (error) {
     if (error.message.includes('already registered')) {
