@@ -109,3 +109,20 @@ footer {
 #message.success {
   color: #4b7b4b;
 }
+
+select {
+  padding: 16px;
+  border: 1.5px solid #d8cfc4;
+  border-radius: 12px;
+  background-color: #fffaf3;
+  font-size: 1.25rem;
+  color: #5c4b3b;
+  appearance: none; /* Remove native arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline-offset: 3px;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%235c4b3b' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+}
