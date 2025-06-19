@@ -3,7 +3,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // Your Supabase URL and anon key
 const SUPABASE_URL = 'https://szolqkxphqzhxbzzxarn.supabase.co'
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6b2xxa3hwaHF6aHhienp4YXJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNjA5MTUsImV4cCI6MjA2NTgzNjkxNX0.9d1kxdyXQRDeWddzTFFrdX064OngMnpmILHHrqMdksk'
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // Get form elements
