@@ -3,19 +3,28 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // Your Supabase URL and anon key
 const SUPABASE_URL = 'https://szolqkxphqzhxbzzxarn.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6b2xxa3hwaHF6aHhienp4YXJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNjA5MTUsImV4cCI6MjA2NTgzNjkxNX0.9d1kxdyXQRDeWddzTFFrdX064OngMnpmILHHrqMdksk'
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-// Get references to elements
+// Get form elements
 const form = document.getElementById('signup-form')
 const emailInput = document.getElementById('email')
 const passwordInput = document.getElementById('password')
-const messageDiv = document.getElementById('message')
+const confirmPasswordInput = document.getElementById('confirmPassword')
 const displayNameInput = document.getElementById('displayName')
 const birthdateInput = document.getElementById('birthdate')
 const genderSelect = document.getElementById('gender')
-const confirmPasswordInput = document.getElementById('confirmPassword')
+const messageDiv = document.getElementById('message')
+
+// Show message helper
+function showMessage(text, type) {
+  messageDiv.textContent = text
+  messageDiv.className = ''
+  void messageDiv.offsetWidth
+  messageDiv.classList.add(type)
+  return false
+}
 
 // Email validation
 function validateEmail(email) {
@@ -23,15 +32,7 @@ function validateEmail(email) {
   return re.test(email.toLowerCase())
 }
 
-// Show message helper
-function showMessage(text, type) {
-  messageDiv.textContent = text
-  messageDiv.className = ''  // Clear previous class
-  void messageDiv.offsetWidth // Force reflow for CSS transition (optional)
-  messageDiv.classList.add(type)
-}
-
-// Calculate age from birthdate (YYYY-MM-DD)
+// Age calculation
 function calculateAge(birthDate) {
   const today = new Date()
   const birth = new Date(birthDate)
@@ -43,79 +44,54 @@ function calculateAge(birthDate) {
   return age
 }
 
-// Form submit handler
+// Form submission
 form.addEventListener('submit', async (event) => {
   event.preventDefault()
 
   const email = emailInput.value.trim()
   const password = passwordInput.value.trim()
+  const confirmPassword = confirmPasswordInput.value.trim()
   const displayName = displayNameInput.value.trim()
   const birthdate = birthdateInput.value
   const gender = genderSelect.value
-  const confirmPassword = confirmPasswordInput.value.trim()
 
-  if (!displayName) {
-    showMessage('Display name is required.', 'error')
-    return
-  }
+  if (!displayName) return showMessage('Display name is required.', 'error')
+  if (!birthdate) return showMessage('Birthdate is required.', 'error')
+  if (calculateAge(birthdate) < 13) return showMessage('You must be at least 13 years old.', 'error')
+  if (!gender) return showMessage('Please select a gender.', 'error')
+  if (password !== confirmPassword) return showMessage("Passwords don't match.", 'error')
+  if (!validateEmail(email)) return showMessage('Enter a valid email address.', 'error')
+  if (password.length < 6) return showMessage('Password must be at least 6 characters.', 'error')
 
-  if (!birthdate) {
-    showMessage('Birthdate is required.', 'error')
-    return
-  }
+  console.log('✅ All validations passed.')
 
-  const age = calculateAge(birthdate)
-  if (age < 13) {
-    showMessage('Sorry, you must be at least 13 years old to sign up.', 'error')
-    return
-  }
-
-  if (!gender) {
-    showMessage('Please select a gender.', 'error')
-    return
-  }
-
-  if (password !== confirmPassword) {
-    showMessage("Passwords don't match.", 'error')
-    return
-  }
-
-  if (!validateEmail(email)) {
-    showMessage('Please enter a valid email address.', 'error')
-    emailInput.focus()
-    return
-  }
-
-  if (password.length < 6) {
-    showMessage('Password must be at least 6 characters.', 'error')
-    passwordInput.focus()
-    return
-  }
-  console.log({ displayName, email, password, confirmPassword, birthdate, gender })
-
-  // Supabase sign up
-const { data, error } = await supabase.auth.signUp({
-  email,
-  password,
-  options: {
-    data: {
-      display_name: displayName,
-      birthdate,
-      gender,
+  // Attempt sign-up
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        display_name: displayName,
+        birthdate,
+        gender,
+      },
+      emailRedirectTo: 'https://ziaadkn.github.io/mellow/welcome.html',
     },
-    emailRedirectTo: 'https://ziaadkn.github.io/mellow/welcome.html'
-  }
-});
+  })
 
   if (error) {
     if (error.message.includes('already registered')) {
-      showMessage('This email is already in use.', 'error')
+      return showMessage('This email is already in use.', 'error')
     } else {
-      showMessage(error.message, 'error')
+      return showMessage(error.message, 'error')
     }
-  } else {
-    showMessage("Thanks for signing up! Please check your email's inbox (or spam) to confirm.", 'success')
-    emailInput.value = ''
-    passwordInput.value = ''
   }
+
+  showMessage("Thanks for signing up! Check your email to confirm.", 'success')
+  emailInput.value = ''
+  passwordInput.value = ''
+  confirmPasswordInput.value = ''
+  displayNameInput.value = ''
+  birthdateInput.value = ''
+  genderSelect.value = ''
 })
