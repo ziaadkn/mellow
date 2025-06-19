@@ -47,10 +47,12 @@ form.addEventListener('submit', async (event) => {
 
   // Call Supabase signUp
   const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
+  email,
+  password,
+  options: {
+    emailRedirectTo: 'https://ziaadkn.github.io/mellow/welcome.html'
+  }
   })
-
   if (error) {
     // Supabase error messages can be verbose, customize if you want
     if (error.message.includes('already registered')) {
