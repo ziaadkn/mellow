@@ -24,7 +24,7 @@
       Your email has been confirmed successfully. Welcome to <strong>Mellow</strong> — your cozy space to connect with kind people.
     </p>
 
-    <div id="message" aria-live="polite" role="alert"></div>
+    <div id="message" aria-live="polite" role="alert" style="margin-top: 20px;"></div>
 
     <a href="index.html" style="margin-top: 30px;">
       <button>Back to Sign In</button>
@@ -33,37 +33,38 @@
 
   <footer>Made with ❤️ by Ziad</footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const supabase = Supabase.createClient('https://szolqkxphqzhxbzzxarn.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6b2xxa3hwaHF6aHhienp4YXJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNjA5MTUsImV4cCI6MjA2NTgzNjkxNX0.9d1kxdyXQRDeWddzTFFrdX064OngMnpmILHHrqMdksk');
+  <!-- Use Supabase via ES module -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    window.addEventListener('load', async () => {
-      const { data, error } = await supabase.auth.getSession();
-      const messageDiv = document.getElementById('message');
+    const supabase = createClient(
+      'https://szolqkxphqzhxbzzxarn.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6b2xxa3hwaHF6aHhienp4YXJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNjA5MTUsImV4cCI6MjA2NTgzNjkxNX0.9d1kxdyXQRDeWddzTFFrdX064OngMnpmILHHrqMdksk'
+    );
 
-      if (error) {
-        messageDiv.textContent = 'Error logging in. Please try again.';
-        messageDiv.className = 'error';
-        return;
-      }
+    const { data, error } = await supabase.auth.getSession();
+    const messageDiv = document.getElementById('message');
 
-      if (data.session) {
-        messageDiv.textContent = 'Login successful! Redirecting...';
-        messageDiv.className = 'success';
-        // Redirect to index.html after 2 seconds
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 2000);
-      } else {
-        messageDiv.textContent = 'No active session found. Please sign in.';
-        messageDiv.className = 'error';
-      }
+    if (error) {
+      messageDiv.textContent = 'Error logging in. Please try again.';
+      messageDiv.className = 'error';
+    } else if (data.session) {
+      messageDiv.textContent = `Logged in as ${data.session.user.email}`;
+      messageDiv.className = 'success';
 
-      // Clear URL fragment
-      if (window.location.hash) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    });
+      // Optional redirect after a short delay
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 3000);
+    } else {
+      messageDiv.textContent = 'Session not found. Please sign in.';
+      messageDiv.className = 'error';
+    }
+
+    // Clear the URL hash (#access_token=...)
+    if (window.location.hash) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   </script>
 </body>
 
