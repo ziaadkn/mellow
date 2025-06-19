@@ -17,11 +17,29 @@
 <body>
   <div class="main-content">
     <h1>Welcome to Mellow</h1>
-    <form id="signup-form" novalidate>
-      <input type="email" placeholder="Enter your email" id="email" required autocomplete="email" />
-      <input type="password" placeholder="Enter your password" id="password" required autocomplete="new-password" />
-      <button type="submit">Sign up</button>
-    </form>
+    <form id="signup-form">
+  <input type="text" placeholder="Display Name" id="displayName" required />
+
+  <input type="email" placeholder="Email" id="email" required />
+
+  <input type="date" id="birthdate" required />
+
+  <select id="gender" required>
+    <option value="" disabled selected>Gender</option>
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+    <option value="prefer_not_to_say">Prefer not to say</option>
+  </select>
+
+  <input type="password" placeholder="Password" id="password" required />
+
+  <input type="password" placeholder="Confirm Password" id="confirmPassword" required />
+
+  <button type="submit">Sign Up</button>
+</form>
+
+<div id="message"></div>
+
 
     <div id="message" aria-live="polite" role="alert"></div>
   </div>
